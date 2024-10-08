@@ -3,4 +3,4 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18.x"  # Match this with your package.json engines field if necessary
+  NODE_VERSION = "18"  # Match this with your package.json engines field if necessary
