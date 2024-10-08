@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Textarea } from "../components/ui/Textarea";
+import Textarea from "../components/ui/textarea.jsx"
 import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore"; // Firebase Firestore functions
 import { chatSession } from "../service/AIModel.js";
 import LoadingScreen from "../LoadingScreen.jsx";
