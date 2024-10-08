@@ -1,0 +1,129 @@
+/* App.css */
+
+/* General Styles */
+/* body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+} */
+
+/* Chat Icon Styles */
+.chat-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000; /* Ensures the chat icon is always on top */
+}
+
+/* Full Page Chat UI */
+.chat-ui-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f9fafb; /* Light background */
+  padding-top: 60px; /* For fixed header */
+  padding-bottom: 20px;
+  overflow-y: auto;
+}
+
+/* Chat Message Styles */
+.chat-message {
+  padding: 10px 15px;
+  border-radius: 15px;
+  margin: 10px;
+  max-width: 75%;
+  word-wrap: break-word;
+  font-size: 0.9rem;
+}
+
+/* User Message Styles */
+.user-message {
+  align-self: flex-end;
+  background-color: #10b981; /* Green */
+  color: white;
+}
+
+/* Support Message Styles */
+.support-message {
+  align-self: flex-start;
+  background-color: #2563eb; /* Blue */
+  color: white;
+}
+
+/* Input Field Container */
+.message-input-container {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9; /* Light Gray */
+  border-top: 1px solid #e5e7eb;
+}
+
+.message-input-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .chat-icon {
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .chat-message {
+    max-width: 90%;
+  }
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1f2937; /* Dark background */
+    color: #f9fafb; /* Light text */
+  }
+
+  .chat-ui-container {
+    background-color: #1f2937;
+  }
+
+  .user-message {
+    background-color: #4ade80; /* Lighter green for dark mode */
+    color: #1f2937;
+  }
+
+  .support-message {
+    background-color: #3b82f6; /* Lighter blue for dark mode */
+    color: #1f2937;
+  }
+
+  .message-input-container {
+    background-color: #374151; /* Darker background for input */
+  }
+
+  .message-input-container input[type="text"] {
+    border: 1px solid #555;
+    background-color: #4b5563; /* Dark background for input */
+    color: #f9fafb;
+  }
+}
+
+/* Header Styles */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  z-index: 50;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.fixed-header.dark {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
