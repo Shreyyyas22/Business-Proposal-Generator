@@ -6,6 +6,7 @@ import { useDarkMode } from "./context/DarkModeContext.jsx";
 import CreateProposal from "./create-proposal/create-proposal.jsx";
 import ViewProposal from "./view-proposal/view-proposal.jsx";
 import MyProposals from "./my-proposals/MyProposals.jsx";
+import ProtectedRoute from "./route/ProtectedRoute.jsx";
 
 
 function App() {
@@ -19,9 +20,30 @@ function App() {
         <Routes>
           {/* Existing Routes */}
           <Route path="/" element={<Hero />} />
-          <Route path="/create-proposal" element={<CreateProposal />} />
-          <Route path="/my-proposal" element={<MyProposals />} />
-          <Route path="/view-proposal/:docId" element={<ViewProposal />} />
+          <Route 
+            path="/create-proposal" 
+            element={
+              <ProtectedRoute>
+                <CreateProposal />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/my-proposal" 
+            element={
+              <ProtectedRoute>
+                <MyProposals />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/view-proposal/:docId" 
+            element={
+              <ProtectedRoute>
+                <ViewProposal />
+              </ProtectedRoute>
+            } 
+          />
           
 
         </Routes>

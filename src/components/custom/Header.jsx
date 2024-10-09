@@ -47,8 +47,7 @@ export default function Header() {
         <div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
           <div className="flex justify-start lg:w-0 lg:flex-1">
             <Link to="/" className="flex items-center">
-              <img src="/logo.jpeg" alt="Logo" className="h-8 w-auto sm:h-10" />
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Gemini Proposals</span>
+              <img src="/logo.png" alt="Logo" className="h-8 w-auto sm:h-10" />
             </Link>
           </div>
           <div className="-mr-2 -my-2 md:hidden">
