@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db, googleProvider } from "../service/FirebaseConfig";
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { signInWithRedirect, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
@@ -12,33 +12,42 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  // Helper function to create chat collection for a new user
+  const createChatCollection = async (uid) => {
+    try {
+      const chatRef = doc(db, "chats", uid);
+      await setDoc(chatRef, {}); // Create an empty document for the chat collection
+    } catch (error) {
+      console.error("Failed to create chat collection:", error);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         const userRef = doc(db, "users", currentUser.uid);
         const userSnapshot = await getDoc(userRef);
 
-        // If the user doesn't exist in Firestore, create their document
         if (!userSnapshot.exists()) {
+          // If user doesn't exist, create document with default role
           await setDoc(userRef, {
             uid: currentUser.uid,
             name: currentUser.displayName,
             email: currentUser.email,
             photoURL: currentUser.photoURL,
-            role: "client", // Default role
+            role: "client",
           });
 
-          // Automatically create a chat collection for the new user
           await createChatCollection(currentUser.uid);
         }
 
-        // Fetch user data including the role
+        // Fetch user data, fallback to "client" role if undefined
         const userData = {
           uid: currentUser.uid,
           name: currentUser.displayName,
           email: currentUser.email,
           photoURL: currentUser.photoURL,
-          role: userSnapshot.data().role, // Fetching role
+          role: userSnapshot.data()?.role || "client",
         };
 
         setUser(userData);
@@ -54,36 +63,7 @@ export function AuthProvider({ children }) {
 
   const googleLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const credential = result.user;
-      const userRef = doc(db, "users", credential.uid);
-      const userSnapshot = await getDoc(userRef);
-
-      // If the user doesn't exist in Firestore, create their document
-      if (!userSnapshot.exists()) {
-        await setDoc(userRef, {
-          uid: credential.uid,
-          name: credential.displayName,
-          email: credential.email,
-          photoURL: credential.photoURL,
-          role: "client", // Default role
-        });
-
-        // Automatically create a chat collection for the new user
-        await createChatCollection(credential.uid);
-      }
-
-      // Fetch user data including the role
-      const userData = {
-        uid: credential.uid,
-        name: credential.displayName,
-        email: credential.email,
-        photoURL: credential.photoURL,
-        role: userSnapshot.data().role, // Fetching role
-      };
-
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
+      await signInWithRedirect(auth, googleProvider);
     } catch (error) {
       console.error("Google login failed:", error.message);
     }
@@ -91,18 +71,15 @@ export function AuthProvider({ children }) {
 
   const manualLogin = async (email, password) => {
     try {
-      // Implement login logic for support users
-      const userRef = doc(db, "supportUsers", "supportuserID"); // Change this path as necessary
+      const userRef = doc(db, "supportUsers", "supportuserID");
       const userSnapshot = await getDoc(userRef);
-      
+
       if (userSnapshot.exists()) {
         const supportUser = userSnapshot.data();
 
-        // Check if the provided email and password match the stored support user credentials
         if (supportUser.email === email && supportUser.password === password) {
-          // Set user data for support user
           const userData = {
-            uid: "supportuserID", // You can also fetch this dynamically
+            uid: "supportuserID",
             name: supportUser.username,
             email: supportUser.email,
             role: supportUser.role,
@@ -110,20 +87,14 @@ export function AuthProvider({ children }) {
           setUser(userData);
           localStorage.setItem("user", JSON.stringify(userData));
         } else {
-          console.error("Invalid credentials for support user.");
+          console.error("Invalid support user credentials.");
         }
       } else {
-        console.error("Support user not found.");
+        console.error("Support user record not found.");
       }
     } catch (error) {
       console.error("Manual login failed:", error.message);
     }
-  };
-
-  const createChatCollection = async (uid) => {
-    // Create a chat collection for the new user
-    const chatRef = doc(db, "chats", uid); // Assuming chats is a collection where each document is a user
-    await setDoc(chatRef, {}); // Create an empty document for the chat collection
   };
 
   const googleLogout = async () => {
@@ -136,14 +107,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const isAuthenticated = !!user; // Check if user is authenticated
+  const isAuthenticated = !!user;
 
   const value = {
     user,
-    setUser, // Ensure setUser is passed in the context
+    setUser,
     isAuthenticated,
     googleLogin,
-    manualLogin, // Add manualLogin method to the context
+    manualLogin,
     googleLogout,
   };
 
